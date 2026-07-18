@@ -18,6 +18,8 @@ service cloud.firestore {
     match /regalos/{doc} {
       allow read, write: if true;
     }
+    /* La colección "regalos" ya no se usa (se sacó la mesa de regalos, solo queda
+       el alias de Mercado Pago en config.js) — podés dejar esta regla igual, no molesta. */
     match /canciones/{doc} {
       allow create: if true;
       allow read, update, delete: if false;
@@ -37,9 +39,10 @@ En Firestore Database → pestaña "Datos" → colección `invitados` → un doc
 | estado      | string  | "pendiente"                                                |
 | integrantes | array   | Un elemento (tipo *map*) por cada persona de esa familia   |
 
-Cada elemento de `integrantes` es un **map** con dos campos:
+Cada elemento de `integrantes` es un **map** con tres campos:
 - `nombre` (string): nombre de esa persona
 - `asiste` (boolean): dejalo en `true` por defecto
+- `celiaco` (boolean): dejalo en `false` por defecto — el invitado lo puede tildar si esa persona es celíaca
 
 Para cargarlo en la consola de Firebase: al crear el documento, agregá un campo `integrantes`,
 elegí tipo **array**, y dentro agregá un elemento por persona de tipo **map**, con `nombre` y

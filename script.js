@@ -38,7 +38,7 @@ document.getElementById("titulo-nombre").textContent = CONFIG.nombreQuinceañera
 document.getElementById("dedicatoria-texto").textContent = CONFIG.fraseDedicatoria;
 
 if (CONFIG.fotoFondo) {
-  document.querySelector(".portada").style.backgroundImage = `url('${CONFIG.fotoFondo}')`;
+  document.querySelector(".portada").style.setProperty("--foto", `url('${CONFIG.fotoFondo}')`);
 }
 
 const fechaEvento = new Date(CONFIG.fechaEvento);
@@ -172,11 +172,17 @@ function mostrarTarjeta(id) {
   integrantes.forEach((integrante, idx) => {
     const fila = document.createElement("div");
     fila.className = "integrante-row";
-    const checkboxId = "integrante-" + idx;
+    const idAsiste = "asiste-" + idx;
+    const idCeliaco = "celiaco-" + idx;
     const marcado = integrante.asiste !== false; // por defecto tildado
+    const esCeliaco = integrante.celiaco === true; // por defecto sin marcar
     fila.innerHTML = `
-      <input type="checkbox" id="${checkboxId}" data-idx="${idx}" ${marcado ? "checked" : ""}>
-      <label for="${checkboxId}">${integrante.nombre}</label>
+      <input type="checkbox" id="${idAsiste}" data-idx="${idx}" data-campo="asiste" ${marcado ? "checked" : ""}>
+      <label for="${idAsiste}" class="nombre-integrante">${integrante.nombre}</label>
+      <span class="celiaco-check">
+        <input type="checkbox" id="${idCeliaco}" data-idx="${idx}" data-campo="celiaco" ${esCeliaco ? "checked" : ""}>
+        <label for="${idCeliaco}">Celíaco/a</label>
+      </span>
     `;
     listaIntegrantesEl.appendChild(fila);
   });
@@ -196,10 +202,15 @@ btnGuardarFamilia.addEventListener("click", async () => {
   if (!fam) return;
 
   const checkboxes = listaIntegrantesEl.querySelectorAll("input[type=checkbox]");
-  const integrantesActualizados = (fam.integrantes || []).map((integrante, idx) => ({
-    nombre: integrante.nombre,
-    asiste: checkboxes[idx] ? checkboxes[idx].checked : false
-  }));
+  const integrantesActualizados = (fam.integrantes || []).map((integrante, idx) => {
+    const cbAsiste = listaIntegrantesEl.querySelector(`[data-idx="${idx}"][data-campo="asiste"]`);
+    const cbCeliaco = listaIntegrantesEl.querySelector(`[data-idx="${idx}"][data-campo="celiaco"]`);
+    return {
+      nombre: integrante.nombre,
+      asiste: cbAsiste ? cbAsiste.checked : false,
+      celiaco: cbCeliaco ? cbCeliaco.checked : false
+    };
+  });
   const algunoAsiste = integrantesActualizados.some(i => i.asiste);
 
   try {
@@ -215,53 +226,6 @@ btnGuardarFamilia.addEventListener("click", async () => {
     rsvpEstado.textContent = "Hubo un problema, probá de nuevo.";
   }
 });
-
-// --- Mesa de regalos ---
-const regalosLista = document.getElementById("regalos-lista");
-
-function pintarRegalos(reservadosIds) {
-  regalosLista.innerHTML = "";
-  CONFIG.regalos.forEach(r => {
-    const reservado = reservadosIds.has(r.id);
-    const item = document.createElement("div");
-    item.className = "regalo-item" + (reservado ? " reservado" : "");
-    item.innerHTML = `
-      <span class="nombre">${r.nombre}</span>
-      <span class="tag ${reservado ? "reservado-tag" : "disponible"}">${reservado ? "Reservado" : "Disponible"}</span>
-      <button ${reservado ? "disabled" : ""} data-id="${r.id}" data-nombre="${r.nombre}">
-        ${reservado ? "Ya elegido" : "Elegir"}
-      </button>
-    `;
-    regalosLista.appendChild(item);
-  });
-
-  regalosLista.querySelectorAll("button:not(:disabled)").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      if (!db) { alert("Falta conectar la base de datos."); return; }
-      const quien = prompt("¿Tu nombre, para avisarle a " + CONFIG.nombreQuinceañera + "?");
-      if (!quien) return;
-      try {
-        await db.collection("regalos").doc(btn.dataset.id).set({
-          nombre: btn.dataset.nombre,
-          reservadoPor: quien,
-          fecha: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      } catch (err) {
-        console.error(err);
-        alert("No se pudo reservar. Probá de nuevo.");
-      }
-    });
-  });
-}
-
-if (db) {
-  db.collection("regalos").onSnapshot(snapshot => {
-    const reservados = new Set(snapshot.docs.map(d => d.id));
-    pintarRegalos(reservados);
-  });
-} else {
-  pintarRegalos(new Set());
-}
 
 // --- Alias / CVU Mercado Pago ---
 document.getElementById("mp-alias-valor").textContent = "Alias: " + CONFIG.aliasMercadoPago;
@@ -282,4 +246,7 @@ if (CONFIG.fotosCompartidasUrl) {
   document.getElementById("fotos-compartidas-seccion").style.display = "block";
   const qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=" + encodeURIComponent(CONFIG.fotosCompartidasUrl);
   document.getElementById("qr-fotos-img").src = qrSrc;
+  const linkTexto = document.getElementById("link-fotos-texto");
+  linkTexto.href = CONFIG.fotosCompartidasUrl;
+  linkTexto.textContent = CONFIG.fotosCompartidasUrl;
 }

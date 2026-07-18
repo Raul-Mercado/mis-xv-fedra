@@ -26,6 +26,7 @@
 
 <!-- PORTADA -->
 <section class="portada">
+  <div class="portada-tint" aria-hidden="true"></div>
   <div class="esquinas-deco esquinas-brillante" aria-hidden="true">
     <svg class="esq esq-tl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
     <svg class="esq esq-tr" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
@@ -131,12 +132,10 @@
     <svg class="esq esq-br" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
   </div>
   <div class="kicker">Si querés sumarte</div>
-  <h2>Mesa de regalos</h2>
-  <p class="desc">Estas son algunas ideas — cada una se reserva una sola vez.</p>
-  <div class="regalos" id="regalos-lista"></div>
+  <h2>Un regalito</h2>
+  <p class="desc">Tu presencia es lo más importante, pero si me querés hacer un regalo, este es mi alias:</p>
 
   <div class="mp-panel">
-    <p class="desc">Si preferís hacer un regalito en dinero:</p>
     <div class="mp-dato">
       <span class="valor" id="mp-alias-valor"></span>
       <button id="btn-copiar-alias">Copiar</button>
@@ -156,6 +155,8 @@
   <h2>Compartí tus fotos</h2>
   <p class="desc">Escaneá este código para subir las fotos y videos que saques durante la fiesta.</p>
   <div class="qr-wrap"><img id="qr-fotos-img" alt="Código QR para subir fotos"></div>
+  <p class="desc" style="margin-top:1rem;">¿No podés escanear? Entrá directo desde este link:</p>
+  <a class="btn-mapa" id="link-fotos-texto" href="#" target="_blank" rel="noopener" style="word-break:break-all; max-width: 90%;"></a>
 </section>
 
 <footer>Con cariño, ¡espero verte ahí!</footer>

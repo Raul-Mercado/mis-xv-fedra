@@ -39,15 +39,6 @@ const CONFIG = {
   // --- Música de fondo (URL de un mp3) ---
   musicaUrl: "",
 
-  // --- Mesa de regalos ---
-  regalos: [
-    { id: "regalo1", nombre: "Set de maquillaje" },
-    { id: "regalo2", nombre: "Perfume" },
-    { id: "regalo3", nombre: "Vale para ropa" },
-    { id: "regalo4", nombre: "Cámara instantánea" },
-    { id: "regalo5", nombre: "Auriculares inalámbricos" }
-  ],
-
   // --- Regalo en dinero (Mercado Pago) ---
   aliasMercadoPago: "fedra.ferrero.",
   cvuMercadoPago: "0000003100088488554734",
