@@ -112,7 +112,7 @@ formPlaylist.addEventListener("submit", async (e) => {
   }
 });
 
-// --- Confirmación: buscador de invitados ---
+// --- Confirmación: buscador de familias ---
 document.getElementById("deadline-texto").textContent =
   "Por favor confirmá antes del " + CONFIG.fechaLimiteConfirmar + ".";
 
@@ -120,20 +120,18 @@ const inputBuscar = document.getElementById("buscar-invitado");
 const sugerenciasLista = document.getElementById("sugerencias-lista");
 const tarjetaInvitado = document.getElementById("tarjeta-invitado");
 const tarjetaNombre = document.getElementById("tarjeta-nombre");
-const tarjetaEstado = document.getElementById("tarjeta-estado");
+const listaIntegrantesEl = document.getElementById("lista-integrantes");
 const tarjetaMesa = document.getElementById("tarjeta-mesa");
-const btnConfirmar = document.getElementById("btn-confirmar");
-const btnCancelar = document.getElementById("btn-cancelar");
+const btnGuardarFamilia = document.getElementById("btn-guardar-familia");
 const rsvpEstado = document.getElementById("rsvp-estado");
 
-let listaInvitados = []; // { id, nombre, mesa, estado }
-let invitadoSeleccionadoId = null;
+let listaFamilias = []; // { id, familia, mesa, estado, integrantes: [{nombre, asiste}] }
+let familiaSeleccionadaId = null;
 
 if (db) {
   db.collection("invitados").onSnapshot(snapshot => {
-    listaInvitados = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    // Si hay un invitado abierto, refrescar su tarjeta con datos nuevos (ej. mesa asignada)
-    if (invitadoSeleccionadoId) mostrarTarjeta(invitadoSeleccionadoId);
+    listaFamilias = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (familiaSeleccionadaId) mostrarTarjeta(familiaSeleccionadaId);
   });
 }
 
@@ -141,61 +139,82 @@ inputBuscar.addEventListener("input", () => {
   const texto = inputBuscar.value.trim().toLowerCase();
   sugerenciasLista.innerHTML = "";
   if (!texto) { sugerenciasLista.style.display = "none"; return; }
-  const coincidencias = listaInvitados
-    .filter(inv => (inv.nombre || "").toLowerCase().includes(texto))
+  const coincidencias = listaFamilias
+    .filter(fam => {
+      const enFamilia = (fam.familia || "").toLowerCase().includes(texto);
+      const enIntegrantes = (fam.integrantes || []).some(i => (i.nombre || "").toLowerCase().includes(texto));
+      return enFamilia || enIntegrantes;
+    })
     .slice(0, 8);
   if (coincidencias.length === 0) { sugerenciasLista.style.display = "none"; return; }
   sugerenciasLista.style.display = "block";
-  coincidencias.forEach(inv => {
+  coincidencias.forEach(fam => {
     const opcion = document.createElement("div");
-    opcion.textContent = inv.nombre;
+    opcion.textContent = fam.familia;
     opcion.addEventListener("click", () => {
-      inputBuscar.value = inv.nombre;
+      inputBuscar.value = fam.familia;
       sugerenciasLista.style.display = "none";
-      mostrarTarjeta(inv.id);
+      mostrarTarjeta(fam.id);
     });
     sugerenciasLista.appendChild(opcion);
   });
 });
 
 function mostrarTarjeta(id) {
-  const inv = listaInvitados.find(i => i.id === id);
-  if (!inv) return;
-  invitadoSeleccionadoId = id;
+  const fam = listaFamilias.find(f => f.id === id);
+  if (!fam) return;
+  familiaSeleccionadaId = id;
   tarjetaInvitado.style.display = "block";
-  tarjetaNombre.textContent = inv.nombre;
+  tarjetaNombre.textContent = fam.familia;
 
-  const estado = inv.estado || "pendiente";
-  tarjetaEstado.textContent = estado === "confirmado" ? "Confirmado" : estado === "cancelado" ? "No asiste" : "Pendiente";
-  tarjetaEstado.className = "estado-badge " + estado;
+  const integrantes = fam.integrantes || [];
+  listaIntegrantesEl.innerHTML = "";
+  integrantes.forEach((integrante, idx) => {
+    const fila = document.createElement("div");
+    fila.className = "integrante-row";
+    const checkboxId = "integrante-" + idx;
+    const marcado = integrante.asiste !== false; // por defecto tildado
+    fila.innerHTML = `
+      <input type="checkbox" id="${checkboxId}" data-idx="${idx}" ${marcado ? "checked" : ""}>
+      <label for="${checkboxId}">${integrante.nombre}</label>
+    `;
+    listaIntegrantesEl.appendChild(fila);
+  });
 
-  if (estado === "confirmado" && inv.mesa) {
+  if (fam.estado === "confirmado" && fam.mesa) {
     tarjetaMesa.style.display = "block";
-    tarjetaMesa.textContent = "Tu mesa es la N.º " + inv.mesa;
+    tarjetaMesa.textContent = "Su mesa es la N.º " + fam.mesa;
   } else {
     tarjetaMesa.style.display = "none";
   }
-
-  btnConfirmar.disabled = estado === "confirmado";
-  btnCancelar.disabled = estado === "cancelado";
   rsvpEstado.textContent = "";
 }
 
-async function actualizarEstado(nuevoEstado) {
-  if (!invitadoSeleccionadoId) return;
+btnGuardarFamilia.addEventListener("click", async () => {
+  if (!familiaSeleccionadaId || !db) return;
+  const fam = listaFamilias.find(f => f.id === familiaSeleccionadaId);
+  if (!fam) return;
+
+  const checkboxes = listaIntegrantesEl.querySelectorAll("input[type=checkbox]");
+  const integrantesActualizados = (fam.integrantes || []).map((integrante, idx) => ({
+    nombre: integrante.nombre,
+    asiste: checkboxes[idx] ? checkboxes[idx].checked : false
+  }));
+  const algunoAsiste = integrantesActualizados.some(i => i.asiste);
+
   try {
-    await db.collection("invitados").doc(invitadoSeleccionadoId).update({ estado: nuevoEstado });
-    rsvpEstado.textContent = nuevoEstado === "confirmado"
+    await db.collection("invitados").doc(familiaSeleccionadaId).update({
+      integrantes: integrantesActualizados,
+      estado: algunoAsiste ? "confirmado" : "cancelado"
+    });
+    rsvpEstado.textContent = algunoAsiste
       ? "¡Gracias por confirmar! 🎉"
       : "Quedó registrado, ¡gracias por avisar!";
   } catch (err) {
     console.error(err);
     rsvpEstado.textContent = "Hubo un problema, probá de nuevo.";
   }
-}
-
-btnConfirmar.addEventListener("click", () => actualizarEstado("confirmado"));
-btnCancelar.addEventListener("click", () => actualizarEstado("cancelado"));
+});
 
 // --- Mesa de regalos ---
 const regalosLista = document.getElementById("regalos-lista");

@@ -269,6 +269,18 @@ p.desc { max-width: 40ch; margin: 0.8rem auto 0; line-height: 1.6; }
 .acciones-invitado button:disabled { opacity: 0.4; cursor: default; }
 .estado-msg { font-size: 0.85rem; min-height: 1.2em; margin-top: 0.8rem; }
 
+/* --- Checklist de integrantes de la familia --- */
+.lista-integrantes { margin-top: 1rem; text-align: left; }
+.integrante-row {
+  display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 0.2rem;
+  border-bottom: 1px solid rgba(140,138,132,0.3);
+}
+.integrante-row:last-child { border-bottom: none; }
+.integrante-row input[type="checkbox"] {
+  width: 20px; height: 20px; accent-color: var(--gris-osc); cursor: pointer; flex-shrink: 0;
+}
+.integrante-row label { font-family: var(--display); font-size: 1.1rem; cursor: pointer; }
+
 /* --- Mesa de regalos --- */
 .regalos { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.6rem; text-align: left; }
 .regalo-item {
