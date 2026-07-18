@@ -1,0 +1,318 @@
+/* =========================================================
+   IDENTIDAD VISUAL — "Mis XV Fedra"
+   Paleta: acuarela en grises y plata, con blanco cálido
+   Tipografía: Alex Brush (script, el nombre) + Cormorant
+   Garamond (títulos) + Jost (cuerpo) + Caveat (notas a mano)
+   Motivo: estrellitas que caen y se desvanecen + filigranas
+   ========================================================= */
+
+:root {
+  --gris-fondo: #a9a9a6;
+  --gris-panel: #d8d5cf;
+  --gris-osc: #33312e;
+  --plata: #c6c4bf;
+  --crema: #f5f2ea;
+  --acento: #8c8a84;
+  --dorado: #f3ce6d;
+  --dorado-sombra: rgba(243, 206, 109, 0.4);
+
+  --script: "Alex Brush", cursive;
+  --display: "Cormorant Garamond", serif;
+  --cuerpo: "Jost", sans-serif;
+  --mano: "Caveat", cursive;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--gris-fondo);
+  color: var(--gris-osc);
+  font-family: var(--cuerpo);
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--crema); outline-offset: 3px; }
+
+/* --- Estrellitas cayendo (fondo ambiente, fijo) --- */
+.cielo-estrellas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.estrella {
+  position: absolute;
+  top: -5%;
+  color: var(--crema);
+  opacity: 0;
+  font-size: 0.8rem;
+  animation-name: caer;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes caer {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.9; }
+  85%  { opacity: 0.5; }
+  100% { transform: translateY(110vh) rotate(180deg); opacity: 0; }
+}
+
+.seccion {
+  padding: 5.5rem 1.5rem;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- Filigrana / divisor decorativo --- */
+.filigrana { width: 100%; height: 40px; margin: 0 auto; position: relative; z-index: 2; }
+.filigrana svg { width: 100%; height: 100%; }
+.filigrana path {
+  fill: none; stroke: var(--acento); stroke-width: 1.2; stroke-linecap: round;
+}
+.filigrana circle { fill: var(--acento); }
+
+/* --- Motivo decorativo de esquina (enredadera fina) --- */
+.esquinas-deco { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.esq { position: absolute; width: 58px; height: 58px; }
+.esq-tl { top: 1.2rem; left: 1.2rem; }
+.esq-tr { top: 1.2rem; right: 1.2rem; transform: scaleX(-1); }
+.esq-bl { bottom: 1.2rem; left: 1.2rem; transform: scaleY(-1); }
+.esq-br { bottom: 1.2rem; right: 1.2rem; transform: scale(-1,-1); }
+.esquinas-brillante .esq { color: var(--dorado); opacity: 0.6; }
+.esquinas-suave .esq { color: var(--acento); opacity: 0.5; }
+@media (max-width: 600px) {
+  .esq { width: 40px; height: 40px; }
+}
+
+/* --- Portada --- */
+.portada {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--gris-fondo);
+  background-size: cover;
+  background-position: center;
+  color: var(--crema);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.portada::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(194,192,186,0.85) 0%, rgba(169,169,166,0.88) 55%, rgba(143,141,137,0.92) 100%);
+}
+.portada > * { position: relative; z-index: 1; }
+.portada > .esquinas-deco { position: absolute; z-index: 1; }
+.eyebrow {
+  font-family: var(--cuerpo);
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  font-size: 1rem;
+  color: var(--dorado);
+  margin-bottom: 0.9rem;
+}
+.titulo {
+  font-family: var(--script);
+  font-weight: 400;
+  font-size: clamp(4.5rem, 21vw, 9.5rem);
+  line-height: 1;
+  margin: 0;
+  color: var(--dorado);
+  text-shadow: 0 0 22px var(--dorado-sombra), 0 2px 12px rgba(0,0,0,0.3);
+}
+.dedicatoria {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+  max-width: 34ch;
+  line-height: 1.55;
+  margin-top: 1.8rem;
+  color: #f2ead6;
+}
+.fecha-larga {
+  margin-top: 2.4rem;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  letter-spacing: 0.1em;
+  text-transform: capitalize;
+  color: var(--dorado);
+}
+
+/* --- Cuenta regresiva --- */
+.cuenta { display: flex; gap: 1.6rem; margin-top: 2.2rem; }
+.cuenta div { text-align: center; }
+.cuenta .num { font-family: var(--display); font-size: clamp(2.6rem, 3.2vw, 3.4rem); color: var(--dorado); display: block; text-shadow: 0 0 14px var(--dorado-sombra); }
+.cuenta .lbl { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.85; color: var(--crema); }
+
+/* --- Encabezados de sección --- */
+h2 {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  color: var(--gris-osc);
+  margin-bottom: 0.3rem;
+}
+.kicker {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--acento);
+  font-weight: 500;
+}
+p.desc { max-width: 40ch; margin: 0.8rem auto 0; line-height: 1.6; }
+
+/* --- Panel tipo tarjeta (fondo claro, como el papel acuarela) --- */
+.panel {
+  background: var(--gris-panel);
+  border-radius: 4px;
+  padding: 2.4rem 1.6rem;
+  margin-top: 1.5rem;
+}
+
+/* --- Ubicación --- */
+.mapa-wrap { margin-top: 2rem; border: 1px solid var(--acento); border-radius: 2px; overflow: hidden; }
+.mapa-wrap iframe { width: 100%; height: 300px; border: 0; display: block; }
+.direccion { margin-top: 1rem; font-style: italic; font-family: var(--display); font-size: 1.2rem; }
+.btn-mapa, .btn-outline {
+  display: inline-block;
+  margin-top: 1.2rem;
+  padding: 0.7rem 1.8rem;
+  border: 1px solid var(--gris-osc);
+  border-radius: 100px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  background: none;
+  color: var(--gris-osc);
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+  font-family: var(--cuerpo);
+}
+.btn-mapa:hover, .btn-outline:hover { background: var(--gris-osc); color: var(--crema); }
+
+/* --- Dress code --- */
+.dresscode-tag {
+  font-family: var(--cuerpo);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  margin-top: 1rem;
+}
+
+/* --- Galería --- */
+.galeria { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 2rem; }
+.galeria img { width: 100%; height: 130px; object-fit: cover; border-radius: 2px; }
+.galeria img:first-child { grid-column: span 2; grid-row: span 2; height: 100%; }
+
+/* --- Playlist --- */
+.form-playlist { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.8rem; }
+.form-playlist input {
+  font-family: var(--cuerpo); padding: 0.85rem 1rem; border: 1px solid var(--acento);
+  border-radius: 2px; background: var(--crema); font-size: 1rem;
+}
+.nota-mano { font-family: var(--mano); font-size: 1.3rem; color: var(--acento); margin-top: 0.5rem; }
+
+/* --- Confirmación / búsqueda de invitado --- */
+.deadline { font-size: 0.8rem; color: var(--acento); margin-top: 0.4rem; }
+.buscador-invitado { margin-top: 2rem; position: relative; }
+.buscador-invitado input {
+  width: 100%; font-family: var(--cuerpo); padding: 0.95rem 1.1rem; border: 1px solid var(--acento);
+  border-radius: 2px; background: var(--crema); font-size: 1rem;
+}
+.sugerencias {
+  position: absolute; left: 0; right: 0; background: var(--crema); border: 1px solid var(--acento);
+  border-top: none; max-height: 220px; overflow-y: auto; z-index: 5; text-align: left;
+}
+.sugerencias div { padding: 0.7rem 1.1rem; cursor: pointer; }
+.sugerencias div:hover { background: var(--gris-panel); }
+
+.tarjeta-invitado {
+  margin-top: 1.5rem; background: var(--crema); border-radius: 4px; padding: 1.8rem 1.4rem;
+  text-align: left;
+}
+.tarjeta-invitado .nombre-inv { font-family: var(--display); font-size: 1.5rem; font-style: italic; }
+.tarjeta-invitado .estado-badge {
+  display: inline-block; margin-top: 0.4rem; font-size: 0.7rem; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 100px;
+}
+.estado-badge.pendiente { background: rgba(140,138,132,0.2); color: var(--acento); }
+.estado-badge.confirmado { background: rgba(60,110,70,0.15); color: #3c6e46; }
+.estado-badge.cancelado { background: rgba(150,60,60,0.15); color: #963c3c; }
+.mesa-asignada { margin-top: 0.9rem; font-family: var(--display); font-style: italic; font-size: 1.15rem; }
+.acciones-invitado { display: flex; gap: 0.8rem; margin-top: 1.2rem; }
+.acciones-invitado button {
+  flex: 1; font-family: var(--cuerpo); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.8rem; border-radius: 2px; cursor: pointer; border: 1px solid var(--gris-osc);
+  background: var(--gris-osc); color: var(--crema); transition: opacity 0.2s;
+}
+.acciones-invitado button.secundario { background: none; color: var(--gris-osc); }
+.acciones-invitado button:disabled { opacity: 0.4; cursor: default; }
+.estado-msg { font-size: 0.85rem; min-height: 1.2em; margin-top: 0.8rem; }
+
+/* --- Mesa de regalos --- */
+.regalos { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.6rem; text-align: left; }
+.regalo-item {
+  display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.1rem;
+  border: 1px solid var(--acento); border-radius: 2px; background: var(--crema);
+}
+.regalo-item.reservado { opacity: 0.5; }
+.regalo-item .nombre { font-family: var(--display); font-size: 1.15rem; }
+.regalo-item .tag {
+  font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 0.6rem; border-radius: 100px;
+}
+.tag.disponible { background: rgba(140,138,132,0.2); color: var(--acento); }
+.tag.reservado-tag { background: rgba(60,60,60,0.1); color: var(--gris-osc); }
+.regalo-item button {
+  font-family: var(--cuerpo); font-size: 0.75rem; letter-spacing: 0.05em; background: none;
+  border: 1px solid var(--gris-osc); color: var(--gris-osc); padding: 0.4rem 0.8rem; border-radius: 100px; cursor: pointer;
+}
+.regalo-item button:disabled { border-color: #ccc; color: #ccc; cursor: default; }
+
+/* --- Regalo en dinero / alias MP --- */
+.mp-panel { margin-top: 2.2rem; }
+.mp-dato { display: flex; justify-content: space-between; align-items: center; background: var(--crema);
+  border: 1px solid var(--acento); border-radius: 2px; padding: 0.9rem 1.1rem; margin-top: 0.7rem; }
+.mp-dato .valor { font-family: var(--display); font-style: italic; font-size: 1.05rem; }
+.mp-dato button { font-family: var(--cuerpo); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;
+  background: none; border: 1px solid var(--gris-osc); color: var(--gris-osc); padding: 0.35rem 0.7rem;
+  border-radius: 100px; cursor: pointer; }
+
+/* --- QR de fotos --- */
+.qr-wrap { margin-top: 1.8rem; display: flex; justify-content: center; }
+.qr-wrap img { width: 200px; height: 200px; border: 10px solid var(--crema); border-radius: 4px; }
+
+/* --- Reproductor de música flotante --- */
+.reproductor {
+  position: fixed; bottom: 1.2rem; right: 1.2rem; width: 46px; height: 46px; border-radius: 50%;
+  background: var(--gris-osc); color: var(--crema); border: none; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; z-index: 50; box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+
+footer {
+  text-align: center; padding: 3rem 1.5rem; font-family: var(--script); font-size: 2rem; color: var(--gris-osc);
+  position: relative; z-index: 2;
+}
+
+@media (min-width: 600px) {
+  .cuenta { gap: 2.4rem; }
+}
