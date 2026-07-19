@@ -75,6 +75,23 @@ a { color: inherit; }
   text-align: center;
   position: relative;
   z-index: 2;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+}
+.seccion.visible { opacity: 1; transform: translateY(0); }
+
+.seccion > * { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+.seccion.visible > *:nth-child(1) { transition-delay: 0.05s; }
+.seccion.visible > *:nth-child(2) { transition-delay: 0.15s; }
+.seccion.visible > *:nth-child(3) { transition-delay: 0.25s; }
+.seccion.visible > *:nth-child(4) { transition-delay: 0.35s; }
+.seccion.visible > *:nth-child(5) { transition-delay: 0.45s; }
+.seccion.visible > * { opacity: 1; transform: translateY(0); }
+.seccion .esquinas-deco { transition: none !important; opacity: 1 !important; transform: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .seccion, .seccion > * { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
 
 /* --- Filigrana / divisor decorativo --- */
@@ -115,12 +132,15 @@ a { color: inherit; }
 .portada::before {
   content: "";
   position: absolute;
-  inset: 0;
+  left: 0; right: 0;
+  top: -8%; height: 116%;
   z-index: 0;
   background-image: var(--foto, none);
   background-size: cover;
   background-position: center;
   filter: contrast(1.15) brightness(0.95) saturate(1.05);
+  transform: translateY(var(--parallax, 0px));
+  will-change: transform;
 }
 .portada-tint {
   position: absolute;

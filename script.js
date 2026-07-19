@@ -289,3 +289,34 @@ if (CONFIG.fotosCompartidasUrl) {
   linkTexto.href = CONFIG.fotosCompartidasUrl;
   linkTexto.textContent = CONFIG.fotosCompartidasUrl;
 }
+
+// --- Efecto al scrollear: parallax en la foto de portada ---
+const portadaEl = document.querySelector(".portada");
+let ticking = false;
+function actualizarParallax() {
+  const desplazado = window.scrollY;
+  portadaEl.style.setProperty("--parallax", (desplazado * 0.32) + "px");
+  ticking = false;
+}
+window.addEventListener("scroll", () => {
+  if (!ticking) {
+    requestAnimationFrame(actualizarParallax);
+    ticking = true;
+  }
+}, { passive: true });
+
+// --- Efecto al scrollear: cada sección aparece con fundido al entrar en pantalla ---
+if ("IntersectionObserver" in window) {
+  const observador = new IntersectionObserver((entradas) => {
+    entradas.forEach(entrada => {
+      if (entrada.isIntersecting) {
+        entrada.target.classList.add("visible");
+        observador.unobserve(entrada.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
+
+  document.querySelectorAll(".seccion").forEach(sec => observador.observe(sec));
+} else {
+  document.querySelectorAll(".seccion").forEach(sec => sec.classList.add("visible"));
+}
