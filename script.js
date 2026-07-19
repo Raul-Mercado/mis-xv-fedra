@@ -33,11 +33,32 @@ for (let i = 0; i < CANTIDAD_ESTRELLAS; i++) {
   cielo.appendChild(estrella);
 }
 
-// --- Estrella fugaz cada 15 segundos ---
-const fugaz = document.createElement("div");
-fugaz.className = "fugaz";
-fugaz.style.top = (5 + Math.random() * 20) + "%";
-cielo.appendChild(fugaz);
+// --- Estrella fugaz aleatoria, cada 15 seg aprox. ---
+function crearFugaz() {
+  const el = document.createElement("div");
+  el.className = "fugaz";
+
+  const startX = Math.random() * 55;        // vw — arranca en la mitad izquierda/centro
+  const startY = 3 + Math.random() * 32;    // vh — franja superior
+  const angulo = 12 + Math.random() * 20;   // grados hacia abajo
+  const distancia = (45 + Math.random() * 35) * window.innerWidth / 100; // px
+  const dy = distancia * Math.tan(angulo * Math.PI / 180);
+  const largo = 70 + Math.random() * 60;    // px
+  const duracion = 0.9 + Math.random() * 0.6;
+
+  el.style.left = startX + "vw";
+  el.style.top = startY + "vh";
+  el.style.width = largo + "px";
+  el.style.setProperty("--dx", distancia + "px");
+  el.style.setProperty("--dy", dy + "px");
+  el.style.setProperty("--ang", angulo + "deg");
+  el.style.animationDuration = duracion + "s";
+
+  cielo.appendChild(el);
+  el.addEventListener("animationend", () => el.remove());
+}
+setTimeout(crearFugaz, 3000);
+setInterval(() => crearFugaz(), 15000);
 
 // --- Destello dorado al tocar la pantalla ---
 document.addEventListener("pointerdown", (e) => {

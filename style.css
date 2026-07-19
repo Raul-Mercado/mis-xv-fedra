@@ -75,20 +75,22 @@ a { color: inherit; }
 /* --- Estrella fugaz --- */
 .fugaz {
   position: absolute;
-  top: 8%;
-  left: -10%;
-  width: 100px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #fff6d8 70%, var(--dorado));
+  height: 2.5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, #fff6d8 55%, var(--dorado) 88%, #fffdf3 100%);
+  box-shadow: 0 0 10px 1.5px rgba(255, 246, 216, 0.85);
   opacity: 0;
-  transform: rotate(18deg);
-  animation: cruzar 15s linear infinite;
+  pointer-events: none;
+  transform-origin: left center;
+  animation-name: fugaz-cruzar;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
 }
-@keyframes cruzar {
-  0%   { opacity: 0; transform: translate(0, 0) rotate(18deg); }
-  4%   { opacity: 1; }
-  9%   { opacity: 0; transform: translate(130vw, 55vh) rotate(18deg); }
-  100% { opacity: 0; }
+@keyframes fugaz-cruzar {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(var(--ang, 20deg)) scaleX(0.25); }
+  8%   { opacity: 1; }
+  78%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(var(--dx, 600px), var(--dy, 260px)) rotate(var(--ang, 20deg)) scaleX(1); }
 }
 
 /* --- Destello al tocar la pantalla --- */
