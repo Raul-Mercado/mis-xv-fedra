@@ -59,6 +59,45 @@ function actualizarCuenta() {
 actualizarCuenta();
 setInterval(actualizarCuenta, 1000);
 
+// --- Recordatorio de calendario ---
+function formatoFechaUTC(fecha) {
+  return fecha.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+}
+const finEvento = new Date(fechaEvento.getTime() + 4 * 60 * 60 * 1000); // 4 horas de duración
+const tituloEvento = "Mis XV " + CONFIG.nombreQuinceañera;
+const detalleEvento = CONFIG.fraseDedicatoria + " — " + CONFIG.lugar;
+
+const linkGoogleCal =
+  "https://www.google.com/calendar/render?action=TEMPLATE" +
+  "&text=" + encodeURIComponent(tituloEvento) +
+  "&dates=" + formatoFechaUTC(fechaEvento) + "/" + formatoFechaUTC(finEvento) +
+  "&details=" + encodeURIComponent(detalleEvento) +
+  "&location=" + encodeURIComponent(CONFIG.direccion) +
+  "&ctz=America/Argentina/Buenos_Aires";
+document.getElementById("btn-google-calendar").href = linkGoogleCal;
+
+document.getElementById("btn-ics").addEventListener("click", () => {
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "BEGIN:VEVENT",
+    "SUMMARY:" + tituloEvento,
+    "DTSTART:" + formatoFechaUTC(fechaEvento),
+    "DTEND:" + formatoFechaUTC(finEvento),
+    "LOCATION:" + CONFIG.direccion,
+    "DESCRIPTION:" + detalleEvento,
+    "END:VEVENT",
+    "END:VCALENDAR"
+  ].join("\r\n");
+  const blob = new Blob([ics], { type: "text/calendar" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "mis-xv-" + CONFIG.nombreQuinceañera.toLowerCase() + ".ics";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
 // --- Ubicación / mapa ---
 document.getElementById("lugar-nombre").textContent = CONFIG.lugar;
 document.getElementById("direccion-texto").textContent = CONFIG.direccion;
