@@ -161,10 +161,28 @@ const audio = document.getElementById("audio-fondo");
 const btnMusica = document.getElementById("btn-musica");
 if (CONFIG.musicaUrl) {
   audio.src = CONFIG.musicaUrl;
+
   btnMusica.addEventListener("click", () => {
-    if (audio.paused) { audio.play(); btnMusica.textContent = "❚❚"; }
-    else { audio.pause(); btnMusica.textContent = "♪"; }
+    if (audio.paused) audio.play().catch(() => {});
+    else audio.pause();
   });
+
+  // El ícono del botón siempre refleja lo que está pasando de verdad
+  audio.addEventListener("play", () => { btnMusica.textContent = "❚❚"; });
+  audio.addEventListener("pause", () => { btnMusica.textContent = "♪"; });
+
+  // Intento de arranque automático a los 3 segundos de abrir la página
+  setTimeout(() => {
+    audio.play().catch(() => {
+      // El navegador bloqueó el autoplay (pasa en algunos celulares) — arranca
+      // apenas el invitado toque la pantalla por primera vez, sin que note nada raro.
+      const arrancarConPrimerToque = () => {
+        audio.play().catch(() => {});
+        document.removeEventListener("pointerdown", arrancarConPrimerToque);
+      };
+      document.addEventListener("pointerdown", arrancarConPrimerToque, { once: true });
+    });
+  }, 3000);
 } else {
   btnMusica.style.display = "none";
 }
