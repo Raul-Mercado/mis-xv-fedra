@@ -365,6 +365,11 @@ p.desc { max-width: 40ch; margin: 0.8rem auto 0; line-height: 1.6; }
   text-align: left;
 }
 .tarjeta-invitado .nombre-inv { font-family: var(--display); font-size: 1.5rem; font-style: italic; color: var(--dorado-osc); }
+.tarjeta-invitado .numero-inv {
+  display: inline-block; font-family: var(--cuerpo); font-size: 0.7rem; letter-spacing: 0.1em;
+  text-transform: uppercase; background: rgba(169,130,47,0.12); color: var(--dorado-osc);
+  padding: 0.3rem 0.7rem; border-radius: 100px; margin-bottom: 0.5rem;
+}
 .tarjeta-invitado .estado-badge {
   display: inline-block; margin-top: 0.4rem; font-size: 0.7rem; letter-spacing: 0.1em;
   text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 100px;

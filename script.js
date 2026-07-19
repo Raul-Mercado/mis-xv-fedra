@@ -222,11 +222,26 @@ const rsvpEstado = document.getElementById("rsvp-estado");
 
 let listaFamilias = []; // { id, familia, mesa, estado, integrantes: [{nombre, asiste}] }
 let familiaSeleccionadaId = null;
+let yaAbrioPorLink = false;
+
+const numeroEnLink = new URLSearchParams(window.location.search).get("n");
 
 if (db) {
   db.collection("invitados").onSnapshot(snapshot => {
     listaFamilias = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     if (familiaSeleccionadaId) mostrarTarjeta(familiaSeleccionadaId);
+
+    if (numeroEnLink && !yaAbrioPorLink) {
+      const familiaDelLink = listaFamilias.find(f => (f.numero || "").toString() === numeroEnLink);
+      if (familiaDelLink) {
+        yaAbrioPorLink = true;
+        inputBuscar.value = familiaDelLink.familia;
+        mostrarTarjeta(familiaDelLink.id);
+        setTimeout(() => {
+          document.getElementById("confirmacion").scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 600);
+      }
+    }
   });
 }
 
@@ -237,15 +252,16 @@ inputBuscar.addEventListener("input", () => {
   const coincidencias = listaFamilias
     .filter(fam => {
       const enFamilia = (fam.familia || "").toLowerCase().includes(texto);
+      const enNumero = (fam.numero || "").toString().toLowerCase().includes(texto);
       const enIntegrantes = (fam.integrantes || []).some(i => (i.nombre || "").toLowerCase().includes(texto));
-      return enFamilia || enIntegrantes;
+      return enFamilia || enNumero || enIntegrantes;
     })
     .slice(0, 8);
   if (coincidencias.length === 0) { sugerenciasLista.style.display = "none"; return; }
   sugerenciasLista.style.display = "block";
   coincidencias.forEach(fam => {
     const opcion = document.createElement("div");
-    opcion.textContent = fam.familia;
+    opcion.textContent = fam.familia + (fam.numero ? " — N° " + fam.numero : "");
     opcion.addEventListener("click", () => {
       inputBuscar.value = fam.familia;
       sugerenciasLista.style.display = "none";
@@ -261,6 +277,7 @@ function mostrarTarjeta(id) {
   familiaSeleccionadaId = id;
   tarjetaInvitado.style.display = "block";
   tarjetaNombre.textContent = fam.familia;
+  document.getElementById("tarjeta-numero").textContent = fam.numero ? "N° de invitación: " + fam.numero : "";
 
   const integrantes = fam.integrantes || [];
   listaIntegrantesEl.innerHTML = "";
