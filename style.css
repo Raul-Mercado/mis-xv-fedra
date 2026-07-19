@@ -61,6 +61,53 @@ a { color: inherit; }
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
+.estrella.brillosa {
+  color: var(--dorado);
+  animation-name: caer, destellar;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+@keyframes destellar {
+  0%, 100% { filter: none; }
+  50% { filter: drop-shadow(0 0 6px #fff6d8) brightness(1.8); }
+}
+
+/* --- Estrella fugaz --- */
+.fugaz {
+  position: absolute;
+  top: 8%;
+  left: -10%;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #fff6d8 70%, var(--dorado));
+  opacity: 0;
+  transform: rotate(18deg);
+  animation: cruzar 15s linear infinite;
+}
+@keyframes cruzar {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(18deg); }
+  4%   { opacity: 1; }
+  9%   { opacity: 0; transform: translate(130vw, 55vh) rotate(18deg); }
+  100% { opacity: 0; }
+}
+
+/* --- Destello al tocar la pantalla --- */
+.toque-destello {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 60;
+  background: radial-gradient(circle, #fff6d8 0%, var(--dorado) 45%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: destello-toque 0.7s ease-out forwards;
+}
+@keyframes destello-toque {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60%  { transform: translate(-50%, -50%) scale(2.4); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(3.6); opacity: 0; }
+}
 @keyframes caer {
   0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
   10%  { opacity: 0.9; }

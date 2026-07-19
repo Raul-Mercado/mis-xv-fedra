@@ -22,15 +22,32 @@ const cielo = document.getElementById("cielo-estrellas");
 const CANTIDAD_ESTRELLAS = 28;
 for (let i = 0; i < CANTIDAD_ESTRELLAS; i++) {
   const estrella = document.createElement("span");
-  estrella.className = "estrella";
+  const esBrillosa = Math.random() < 0.22; // ~1 de cada 5 tiene reflejo brilloso
+  estrella.className = "estrella" + (esBrillosa ? " brillosa" : "");
   estrella.textContent = Math.random() > 0.5 ? "✦" : "✧";
   estrella.style.left = Math.random() * 100 + "vw";
   estrella.style.fontSize = (0.5 + Math.random() * 1) + "rem";
-  const duracion = 6 + Math.random() * 10;
-  estrella.style.animationDuration = duracion + "s";
-  estrella.style.animationDelay = (Math.random() * duracion) + "s";
+  const duracion = 11 + Math.random() * 16; // caída más lenta
+  estrella.style.animationDuration = esBrillosa ? (duracion + "s, 2.4s") : (duracion + "s");
+  estrella.style.animationDelay = esBrillosa ? ((Math.random() * duracion) + "s, " + (Math.random() * 2) + "s") : ((Math.random() * duracion) + "s");
   cielo.appendChild(estrella);
 }
+
+// --- Estrella fugaz cada 15 segundos ---
+const fugaz = document.createElement("div");
+fugaz.className = "fugaz";
+fugaz.style.top = (5 + Math.random() * 20) + "%";
+cielo.appendChild(fugaz);
+
+// --- Destello dorado al tocar la pantalla ---
+document.addEventListener("pointerdown", (e) => {
+  const destello = document.createElement("div");
+  destello.className = "toque-destello";
+  destello.style.left = e.clientX + "px";
+  destello.style.top = e.clientY + "px";
+  document.body.appendChild(destello);
+  destello.addEventListener("animationend", () => destello.remove());
+});
 
 // --- Portada ---
 document.getElementById("eyebrow-frase").textContent = CONFIG.fraseIntro;
