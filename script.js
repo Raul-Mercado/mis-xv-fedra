@@ -17,6 +17,26 @@ try {
   console.warn("Firebase no configurado todavía:", e);
 }
 
+// --- Pantalla del sobre ---
+document.body.classList.add("sobre-activo");
+const sobreOverlay = document.getElementById("sobre-overlay");
+const sobreEl = document.getElementById("sobre");
+sobreOverlay.addEventListener("click", () => {
+  if (sobreEl.classList.contains("abierto")) return;
+  sobreEl.classList.add("abierto");
+
+  // Este clic es un gesto real del usuario: el mejor momento para intentar la música
+  if (CONFIG.musicaUrl) {
+    const audioEl = document.getElementById("audio-fondo");
+    if (audioEl.src) audioEl.play().catch(() => {});
+  }
+
+  setTimeout(() => {
+    sobreOverlay.classList.add("oculto");
+    document.body.classList.remove("sobre-activo");
+  }, 1900);
+});
+
 // --- Estrellitas cayendo ---
 const cielo = document.getElementById("cielo-estrellas");
 const CANTIDAD_ESTRELLAS = 28;
@@ -74,6 +94,7 @@ document.addEventListener("pointerdown", (e) => {
 document.getElementById("eyebrow-frase").textContent = CONFIG.fraseIntro;
 document.getElementById("titulo-nombre").textContent = CONFIG.nombreQuinceañera;
 document.getElementById("dedicatoria-texto").textContent = CONFIG.fraseDedicatoria;
+document.getElementById("sobre-inicial").textContent = (CONFIG.nombreQuinceañera || "?").charAt(0).toUpperCase();
 
 if (CONFIG.fotoFondo) {
   document.querySelector(".portada").style.setProperty("--foto", `url('${CONFIG.fotoFondo}')`);
@@ -237,9 +258,6 @@ if (db) {
         yaAbrioPorLink = true;
         inputBuscar.value = familiaDelLink.familia;
         mostrarTarjeta(familiaDelLink.id);
-        setTimeout(() => {
-          document.getElementById("confirmacion").scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 600);
       }
     }
   });

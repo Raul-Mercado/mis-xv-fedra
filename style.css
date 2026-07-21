@@ -451,3 +451,120 @@ footer {
 @media (min-width: 600px) {
   .cuenta { gap: 2.4rem; }
 }
+
+/* =========================================================
+   PANTALLA DEL SOBRE (apertura de la invitación)
+   ========================================================= */
+.sobre-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: radial-gradient(ellipse at 50% 40%, #3d3b37 0%, #1c1b19 85%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.9s ease, visibility 0.9s;
+}
+.sobre-overlay.oculto {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.sobre {
+  position: relative;
+  width: 220px;
+  height: 150px;
+}
+
+.sobre-cuerpo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #2c2b28 0%, #191816 100%);
+  border: 1px solid var(--dorado);
+  border-radius: 3px;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.55);
+  z-index: 1;
+}
+.sobre-cuerpo::before,
+.sobre-cuerpo::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 52%;
+  height: 62%;
+  border-bottom: 1px solid rgba(243,206,109,0.25);
+}
+.sobre-cuerpo::before { left: 0; border-right: 1px solid rgba(243,206,109,0.25); transform: skewY(18deg); transform-origin: bottom left; }
+.sobre-cuerpo::after { right: 0; border-left: 1px solid rgba(243,206,109,0.25); transform: skewY(-18deg); transform-origin: bottom right; }
+
+.sobre-solapa {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 52%;
+  background: linear-gradient(160deg, #3a3835 0%, #201f1c 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition: transform 1s cubic-bezier(.4,.2,.2,1);
+  border-bottom: 1px solid rgba(243,206,109,0.4);
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+}
+.sobre-sello {
+  position: absolute;
+  bottom: -14px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f3ce6d, #a9822f 75%);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  z-index: 4;
+  transition: opacity 0.4s ease 0.2s, transform 0.4s ease 0.2s;
+}
+
+.tarjeta-saliendo {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  width: 76%;
+  height: 74%;
+  background: linear-gradient(170deg, #faf7ee, #f0ebd9);
+  border-radius: 2px;
+  transform: translate(-50%, 0) scale(0.94);
+  opacity: 0;
+  transition: transform 1.15s cubic-bezier(.2,.7,.2,1) 0.35s, opacity 0.6s ease 0.35s;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.4);
+}
+.tarjeta-saliendo span {
+  font-family: var(--script);
+  font-size: 2.4rem;
+  color: var(--dorado-osc);
+}
+
+.sobre.abierto .sobre-solapa { transform: rotateX(180deg); }
+.sobre.abierto .sobre-sello { opacity: 0; transform: scale(0.5); }
+.sobre.abierto .tarjeta-saliendo { transform: translate(-50%, -132%) scale(1); opacity: 1; }
+
+.sobre-texto {
+  margin-top: 2.4rem;
+  color: var(--crema);
+  font-family: var(--cuerpo);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  animation: pulso-suave 2s ease-in-out infinite;
+}
+@keyframes pulso-suave {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.sobre.abierto ~ .sobre-texto { opacity: 0; }
+
+body.sobre-activo { overflow: hidden; height: 100vh; }
