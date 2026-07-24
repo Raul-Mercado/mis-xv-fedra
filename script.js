@@ -97,6 +97,8 @@ document.getElementById("eyebrow-frase").textContent = CONFIG.fraseIntro;
 document.getElementById("titulo-nombre").textContent = CONFIG.nombreQuinceañera;
 document.getElementById("dedicatoria-texto").textContent = CONFIG.fraseDedicatoria;
 document.getElementById("sobre-inicial").textContent = CONFIG.nombreQuinceañera || "?";
+document.getElementById("marca-agua").textContent = (CONFIG.nombreQuinceañera || "?").charAt(0).toUpperCase();
+document.getElementById("sobre-marca-agua").textContent = (CONFIG.nombreQuinceañera || "?").charAt(0).toUpperCase();
 
 if (CONFIG.fotoFondo) {
   document.querySelector(".portada").style.setProperty("--foto", `url('${CONFIG.fotoFondo}')`);
@@ -108,10 +110,18 @@ document.getElementById("fecha-larga").textContent = fechaEvento.toLocaleDateStr
 });
 
 // --- Cuenta regresiva ---
+let yaEsHoy = false;
 function actualizarCuenta() {
   const ahora = new Date();
   let diff = fechaEvento - ahora;
-  if (diff < 0) diff = 0;
+  const cuentaEl = document.getElementById("cuenta-regresiva");
+  if (diff <= 0) {
+    if (!yaEsHoy) {
+      yaEsHoy = true;
+      cuentaEl.innerHTML = '<div class="mensaje-hoy">¡Hoy es el día!</div>';
+    }
+    return;
+  }
   document.getElementById("c-dias").textContent = String(Math.floor(diff / 86400000)).padStart(2, "0");
   document.getElementById("c-horas").textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, "0");
   document.getElementById("c-min").textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
@@ -171,19 +181,35 @@ document.getElementById("dresscode-texto").textContent = CONFIG.dressCode;
 
 // --- Galería ---
 const galeriaGrid = document.getElementById("galeria-grid");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+function abrirLightbox(src) {
+  lightboxImg.src = src;
+  lightbox.classList.add("activo");
+}
+function cerrarLightbox() {
+  lightbox.classList.remove("activo");
+}
+document.getElementById("lightbox-cerrar").addEventListener("click", cerrarLightbox);
+lightbox.addEventListener("click", (e) => { if (e.target === lightbox) cerrarLightbox(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") cerrarLightbox(); });
 CONFIG.fotos.forEach(url => {
   const img = document.createElement("img");
   img.src = url;
   img.alt = "Foto de " + CONFIG.nombreQuinceañera;
   img.loading = "lazy";
+  img.addEventListener("click", () => abrirLightbox(url));
   galeriaGrid.appendChild(img);
 });
 
 // --- Música de fondo ---
 const audio = document.getElementById("audio-fondo");
 const btnMusica = document.getElementById("btn-musica");
+const controlVolumen = document.getElementById("control-volumen");
 if (CONFIG.musicaUrl) {
   audio.src = CONFIG.musicaUrl;
+  audio.volume = controlVolumen.value / 100;
+  controlVolumen.addEventListener("input", () => { audio.volume = controlVolumen.value / 100; });
 
   btnMusica.addEventListener("click", () => {
     if (audio.paused) audio.play().catch(() => {});
@@ -208,6 +234,7 @@ if (CONFIG.musicaUrl) {
   }, 3000);
 } else {
   btnMusica.style.display = "none";
+  controlVolumen.style.display = "none";
 }
 
 // --- Playlist (sugerencias de canciones) ---
@@ -328,6 +355,21 @@ function mostrarTarjeta(id) {
   rsvpEstado.textContent = "";
 }
 
+function dispararConfeti() {
+  const colores = ["#f3ce6d", "#a9822f", "#f5f2ea"];
+  for (let i = 0; i < 40; i++) {
+    const pieza = document.createElement("div");
+    pieza.className = "confeti-pieza";
+    pieza.style.left = Math.random() * 100 + "vw";
+    pieza.style.background = colores[Math.floor(Math.random() * colores.length)];
+    pieza.style.setProperty("--rot", (360 + Math.random() * 540) + "deg");
+    pieza.style.animationDelay = (Math.random() * 0.4) + "s";
+    pieza.style.animationDuration = (2 + Math.random() * 1.2) + "s";
+    document.body.appendChild(pieza);
+    pieza.addEventListener("animationend", () => pieza.remove());
+  }
+}
+
 btnGuardarFamilia.addEventListener("click", async () => {
   if (!familiaSeleccionadaId || !db) return;
   const fam = listaFamilias.find(f => f.id === familiaSeleccionadaId);
@@ -353,6 +395,7 @@ btnGuardarFamilia.addEventListener("click", async () => {
     rsvpEstado.textContent = algunoAsiste
       ? "¡Gracias por confirmar! 🎉"
       : "Quedó registrado, ¡gracias por avisar!";
+    if (algunoAsiste) dispararConfeti();
   } catch (err) {
     console.error(err);
     rsvpEstado.textContent = "Hubo un problema, probá de nuevo.";

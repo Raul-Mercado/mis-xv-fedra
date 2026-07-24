@@ -11,6 +11,7 @@
 <body>
 
 <div class="sobre-overlay" id="sobre-overlay">
+  <div class="sobre-marca-agua" id="sobre-marca-agua" aria-hidden="true"></div>
   <div class="sobre" id="sobre">
     <!-- Solapa superior (se abre hacia arriba) -->
     <div class="sobre-solapa" id="sobre-solapa">
@@ -60,6 +61,7 @@
 <!-- PORTADA -->
 <section class="portada">
   <div class="portada-tint" aria-hidden="true"></div>
+  <div class="marca-agua" id="marca-agua" aria-hidden="true"></div>
   <div class="esquinas-deco esquinas-brillante" aria-hidden="true">
     <svg class="esq esq-tl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
     <svg class="esq esq-tr" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
@@ -98,6 +100,7 @@
   <h2>Ubicación</h2>
   <p class="desc" id="lugar-nombre"></p>
   <div class="mapa-wrap">
+    <span class="mapa-pin" aria-hidden="true"></span>
     <iframe id="mapa-iframe" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </div>
   <div class="direccion" id="direccion-texto"></div>
@@ -224,7 +227,15 @@
 
 <footer>Con todo mi cariño, te espero para celebrar juntos</footer>
 
-<button class="reproductor" id="btn-musica" aria-label="Reproducir música" title="Música">♪</button>
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-cerrar" id="lightbox-cerrar" aria-label="Cerrar">×</button>
+  <img id="lightbox-img" alt="">
+</div>
+
+<div class="reproductor-wrap">
+  <button class="reproductor" id="btn-musica" aria-label="Reproducir música" title="Música">♪</button>
+  <input type="range" id="control-volumen" class="control-volumen" min="0" max="100" value="70" aria-label="Volumen">
+</div>
 <audio id="audio-fondo" loop></audio>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>

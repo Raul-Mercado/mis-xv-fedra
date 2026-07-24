@@ -230,6 +230,20 @@ a { color: inherit; }
 }
 .portada > * { position: relative; z-index: 1; }
 .portada > .esquinas-deco { position: absolute; z-index: 1; }
+.marca-agua {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--script);
+  font-size: clamp(14rem, 55vw, 30rem);
+  line-height: 1;
+  color: rgba(255,255,255,0.05);
+  pointer-events: none;
+  user-select: none;
+}
 .eyebrow {
   font-family: var(--cuerpo);
   letter-spacing: 0.45em;
@@ -352,7 +366,39 @@ p.desc { max-width: 40ch; margin: 0.8rem auto 0; line-height: 1.6; }
 }
 
 /* --- Ubicación --- */
-.mapa-wrap { margin-top: 2rem; border: 1px solid var(--acento); border-radius: 2px; overflow: hidden; box-shadow: 0 14px 34px -14px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.15); }
+.mapa-wrap { margin-top: 2rem; border: 1px solid var(--acento); border-radius: 2px; overflow: visible; box-shadow: 0 14px 34px -14px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.15); position: relative; }
+.mapa-wrap iframe { border-radius: 1px; overflow: hidden; }
+.mapa-pin {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff3c8 0%, var(--dorado) 55%, var(--dorado-osc) 100%);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35), inset 0 1px 2px rgba(255,255,255,0.6);
+  z-index: 6;
+}
+.mapa-pin::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: var(--gris-osc);
+}
+.mapa-pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 11px solid var(--dorado-osc);
+  transform: translateX(-50%);
+}
 .mapa-wrap iframe { width: 100%; height: 300px; border: 0; display: block; }
 .direccion { margin-top: 1rem; font-style: italic; font-family: var(--display); font-size: 1.2rem; color: var(--dorado-osc); }
 .btn-mapa, .btn-outline {
@@ -390,7 +436,7 @@ p.desc { max-width: 40ch; margin: 0.8rem auto 0; line-height: 1.6; }
 
 /* --- Galería --- */
 .galeria { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 2rem; }
-.galeria img { width: 100%; height: 130px; object-fit: cover; border-radius: 2px; box-shadow: 0 8px 20px -10px rgba(0,0,0,0.4); transition: transform 0.35s ease, box-shadow 0.35s ease; }
+.galeria img { width: 100%; height: 130px; object-fit: cover; border-radius: 2px; box-shadow: 0 8px 20px -10px rgba(0,0,0,0.4); transition: transform 0.35s ease, box-shadow 0.35s ease; cursor: pointer; }
 .galeria img:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 16px 28px -12px rgba(0,0,0,0.5); }
 .galeria img:first-child { grid-column: span 2; grid-row: span 2; height: 100%; }
 
@@ -494,11 +540,12 @@ p.desc { max-width: 40ch; margin: 0.8rem auto 0; line-height: 1.6; }
 
 /* --- Reproductor de música flotante --- */
 .reproductor {
-  position: fixed; bottom: 1.2rem; right: 1.2rem; width: 46px; height: 46px; border-radius: 50%;
+  width: 46px; height: 46px; border-radius: 50%;
   background: linear-gradient(145deg, #45423e, var(--gris-osc)); color: var(--crema); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center;
-  justify-content: center; cursor: pointer; z-index: 50;
+  justify-content: center; cursor: pointer;
   box-shadow: 0 8px 22px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.15);
   transition: transform 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
 }
 .reproductor:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2); }
 
@@ -509,6 +556,88 @@ footer {
 
 @media (min-width: 600px) {
   .cuenta { gap: 1.4rem; }
+}
+
+/* --- Mensaje del día del evento --- */
+.mensaje-hoy {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(1.7rem, 4.5vw, 2.3rem);
+  color: var(--dorado);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 16px rgba(0,0,0,0.6);
+  padding: 0.6rem 0;
+}
+
+/* --- Confeti dorado al confirmar --- */
+.confeti-pieza {
+  position: fixed;
+  top: -12px;
+  width: 7px;
+  height: 13px;
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: 300;
+  border-radius: 1px;
+  animation-name: confeti-caer;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+@keyframes confeti-caer {
+  to { transform: translateY(100vh) rotate(var(--rot, 540deg)); opacity: 0; }
+}
+
+/* --- Lightbox de galería --- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10,9,7,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s;
+}
+.lightbox.activo { opacity: 1; visibility: visible; }
+.lightbox img { max-width: 92vw; max-height: 85vh; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
+.lightbox-cerrar {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: var(--crema);
+  font-size: 2.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* --- Reproductor + control de volumen --- */
+.reproductor-wrap {
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1.2rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.control-volumen {
+  width: 0;
+  opacity: 0;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.3);
+  accent-color: var(--dorado);
+  transition: width 0.25s ease, opacity 0.25s ease;
+}
+.reproductor-wrap:hover .control-volumen,
+.reproductor-wrap:focus-within .control-volumen {
+  width: 80px;
+  opacity: 1;
 }
 
 /* =========================================================
@@ -533,6 +662,21 @@ footer {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+}
+
+.sobre-marca-agua {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--script);
+  font-size: clamp(10rem, 42vw, 22rem);
+  line-height: 1;
+  color: rgba(255,255,255,0.035);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
 }
 
 .sobre {
