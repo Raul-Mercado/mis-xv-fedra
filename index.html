@@ -14,12 +14,10 @@
   <div class="sobre" id="sobre">
     <!-- Solapa superior (se abre hacia arriba) -->
     <div class="sobre-solapa" id="sobre-solapa">
-      <div class="sello-cera">
-        <span class="inicial-sello">F</span>
-      </div>
+      <div class="sobre-texto-frente">Invitación a mi fiesta<br>de 15 años</div>
     </div>
 
-    <!-- Interior simple (vacío para que no encierre la tarjeta) -->
+    <!-- Interior simple -->
     <div class="sobre-interior"></div>
 
     <!-- Bolsillo frontal y solapas laterales -->
@@ -27,21 +25,27 @@
       <div class="sobre-solapa-izq"></div>
       <div class="sobre-solapa-der"></div>
       <div class="sobre-solapa-inf"></div>
-      <div class="sobre-texto-frente">Invitación a mi fiesta<br>de 15 años</div>
     </div>
 
-    <!-- Tarjeta saliendo (ahora al final del HTML para salir al frente de todo) -->
-    <div class="tarjeta-saliendo" id="tarjeta-saliendo">
-      <span class="inicial-tarjeta" id="sobre-inicial">F</span>
-      <span class="subtexto-tarjeta">Mis XV</span>
+    <!-- Sello de cera (ahora independiente y al final para estar 100% al frente) -->
+    <div class="sello-cera" id="sello-cera">
+      <span class="sello-goteo" aria-hidden="true"></span>
+      <span class="sello-brillo" aria-hidden="true"></span>
+      <span class="inicial-sello">F</span>
     </div>
+
+ <!-- Tarjeta saliendo -->
+<div class="tarjeta-saliendo" id="tarjeta-saliendo">
+  <span class="inicial-tarjeta" id="sobre-inicial">Fedra</span>
+  <span class="subtexto-tarjeta">Mis XV</span>
+</div>
   </div>
-  <div class="sobre-texto">Tocá para abrir tu invitación</div>
+  <div class="sobre-texto">Tocá para descubrir tu invitación</div>
 </div>
 
 <svg width="0" height="0" style="position:absolute">
   <defs>
-    <g id="motivo-esquina" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+    <g id="motivo-esquina" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
       <path d="M2 68 C2 42 3 22 20 11 C31 4 45 6 48 16 C50 24 43 28 38 24 C34 21 36 16 41 16.5"/>
       <path d="M2 68 C24 66 39 54 41 37"/>
       <circle cx="48" cy="16" r="2"/>
@@ -84,7 +88,13 @@
 
 <!-- UBICACIÓN -->
 <section class="seccion" id="ubicacion">
-  <div class="kicker">Cuándo y dónde</div>
+  <div class="esquinas-deco esquinas-suave" aria-hidden="true">
+    <svg class="esq esq-tl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-tr" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-bl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-br" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+  </div>
+  <div class="kicker">El día y el lugar</div>
   <h2>Ubicación</h2>
   <p class="desc" id="lugar-nombre"></p>
   <div class="mapa-wrap">
@@ -98,7 +108,13 @@
 
 <!-- DRESS CODE -->
 <section class="seccion" id="dresscode-seccion">
-  <div class="kicker">Cómo venir</div>
+  <div class="esquinas-deco esquinas-suave" aria-hidden="true">
+    <svg class="esq esq-tl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-tr" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-bl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-br" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+  </div>
+  <div class="kicker">Para lucirte esa noche</div>
   <h2>Dress code</h2>
   <div class="dresscode-tag" id="dresscode-texto"></div>
 </section>
@@ -107,7 +123,13 @@
 
 <!-- GALERÍA -->
 <section class="seccion" id="galeria-seccion">
-  <div class="kicker">Un poco de mí</div>
+  <div class="esquinas-deco esquinas-suave" aria-hidden="true">
+    <svg class="esq esq-tl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-tr" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-bl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-br" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+  </div>
+  <div class="kicker">Momentos para recordar</div>
   <h2>Galería</h2>
   <div class="galeria" id="galeria-grid"></div>
 </section>
@@ -116,12 +138,18 @@
 
 <!-- PLAYLIST -->
 <section class="seccion" id="playlist-seccion">
+  <div class="esquinas-deco esquinas-suave" aria-hidden="true">
+    <svg class="esq esq-tl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-tr" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-bl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+    <svg class="esq esq-br" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
+  </div>
   <div class="kicker">Armemos la fiesta juntos</div>
-  <h2>¡Me encantaría que hagamos una playlist!</h2>
-  <p class="desc">Agregá una canción que creas que no debe faltar.</p>
+  <h2>Sumemos canciones a la playlist</h2>
+  <p class="desc">Elegí esa canción que no puede faltar en la pista esta noche.</p>
   <form class="form-playlist" id="form-playlist">
     <input type="text" id="playlist-cancion" placeholder="Nombre de la canción y artista" required>
-    <button type="submit" class="btn-outline">Agregar canción 🎵</button>
+    <button type="submit" class="btn-outline">Sumar canción</button>
     <div class="estado-msg" id="playlist-estado"></div>
   </form>
 </section>
@@ -166,9 +194,9 @@
     <svg class="esq esq-bl" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
     <svg class="esq esq-br" viewBox="0 0 70 70"><use href="#motivo-esquina"/></svg>
   </div>
-  <div class="kicker">Si querés sumarte</div>
+  <div class="kicker">Si deseás obsequiarme algo</div>
   <h2>Un regalito</h2>
-  <p class="desc">Tu presencia es lo más importante, pero si me querés hacer un regalo, este es mi alias:</p>
+  <p class="desc">Tu cariño y tu presencia ya son el mejor regalo. Si aun así querés sumarte con algo, este es mi alias:</p>
 
   <div class="mp-panel">
     <div class="mp-dato">
@@ -194,7 +222,7 @@
   <a class="btn-mapa" id="link-fotos-texto" href="#" target="_blank" rel="noopener" style="word-break:break-all; max-width: 90%;"></a>
 </section>
 
-<footer>Con cariño, ¡espero verte ahí!</footer>
+<footer>Con todo mi cariño, te espero para celebrar juntos</footer>
 
 <button class="reproductor" id="btn-musica" aria-label="Reproducir música" title="Música">♪</button>
 <audio id="audio-fondo" loop></audio>

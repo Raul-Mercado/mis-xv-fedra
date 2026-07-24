@@ -44,9 +44,11 @@ for (let i = 0; i < CANTIDAD_ESTRELLAS; i++) {
   const estrella = document.createElement("span");
   const esBrillosa = Math.random() < 0.22; // ~1 de cada 5 tiene reflejo brilloso
   estrella.className = "estrella" + (esBrillosa ? " brillosa" : "");
-  estrella.textContent = Math.random() > 0.5 ? "✦" : "✧";
   estrella.style.left = Math.random() * 100 + "vw";
-  estrella.style.fontSize = (0.5 + Math.random() * 1) + "rem";
+  const tam = 4 + Math.random() * 6;
+  estrella.style.width = tam + "px";
+  estrella.style.height = tam + "px";
+  estrella.style.setProperty("--vaiven", (10 + Math.random() * 26) + "px");
   const duracion = 11 + Math.random() * 16; // caída más lenta
   estrella.style.animationDuration = esBrillosa ? (duracion + "s, 2.4s") : (duracion + "s");
   estrella.style.animationDelay = esBrillosa ? ((Math.random() * duracion) + "s, " + (Math.random() * 2) + "s") : ((Math.random() * duracion) + "s");
@@ -94,7 +96,7 @@ document.addEventListener("pointerdown", (e) => {
 document.getElementById("eyebrow-frase").textContent = CONFIG.fraseIntro;
 document.getElementById("titulo-nombre").textContent = CONFIG.nombreQuinceañera;
 document.getElementById("dedicatoria-texto").textContent = CONFIG.fraseDedicatoria;
-document.getElementById("sobre-inicial").textContent = (CONFIG.nombreQuinceañera || "?").charAt(0).toUpperCase();
+document.getElementById("sobre-inicial").textContent = CONFIG.nombreQuinceañera || "?";
 
 if (CONFIG.fotoFondo) {
   document.querySelector(".portada").style.setProperty("--foto", `url('${CONFIG.fotoFondo}')`);
