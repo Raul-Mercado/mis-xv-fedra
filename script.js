@@ -326,33 +326,39 @@ function mostrarTarjeta(id) {
   tarjetaNombre.textContent = fam.familia;
   document.getElementById("tarjeta-numero").textContent = fam.numero ? "N° de invitación: " + fam.numero : "";
 
+  const yaRespondio = fam.estado === "confirmado" || fam.estado === "cancelado";
+
   const integrantes = fam.integrantes || [];
   listaIntegrantesEl.innerHTML = "";
   integrantes.forEach((integrante, idx) => {
     const fila = document.createElement("div");
     fila.className = "integrante-row";
     const idAsiste = "asiste-" + idx;
-    const idCeliaco = "celiaco-" + idx;
-    const marcado = integrante.asiste !== false; // por defecto tildado
-    const esCeliaco = integrante.celiaco === true; // por defecto sin marcar
+    const idObs = "obs-" + idx;
+    // Mientras la familia no haya respondido todavía, arranca todo destildado
+    // (sin importar el valor guardado por defecto al cargar la lista).
+    const marcado = yaRespondio ? (integrante.asiste === true) : false;
+    const observacionPrevia = integrante.observacion || (integrante.celiaco ? "Celíaco/a" : "");
     fila.innerHTML = `
       <input type="checkbox" id="${idAsiste}" data-idx="${idx}" data-campo="asiste" ${marcado ? "checked" : ""}>
       <label for="${idAsiste}" class="nombre-integrante">${integrante.nombre}</label>
-      <span class="celiaco-check">
-        <input type="checkbox" id="${idCeliaco}" data-idx="${idx}" data-campo="celiaco" ${esCeliaco ? "checked" : ""}>
-        <label for="${idCeliaco}">Celíaco/a</label>
-      </span>
+      <input type="text" class="obs-alimentaria" id="${idObs}" data-idx="${idx}" data-campo="observacion"
+             placeholder="¿Alguna dieta o alergia? (opcional)" value="${observacionPrevia.replace(/"/g, "&quot;")}">
     `;
     listaIntegrantesEl.appendChild(fila);
   });
 
-  if (fam.estado === "confirmado" && fam.mesa) {
+  rsvpEstado.textContent = "";
+
+  // La mesa se revela sola desde una semana antes del evento, y solo si la familia ya confirmó.
+  const unaSemanaAntes = new Date(fechaEvento.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const yaLlegoLaSemana = new Date() >= unaSemanaAntes;
+  if (yaRespondio && fam.estado === "confirmado" && fam.mesa && yaLlegoLaSemana) {
     tarjetaMesa.style.display = "block";
-    tarjetaMesa.textContent = "Su mesa es la N.º " + fam.mesa;
+    tarjetaMesa.textContent = "Tu mesa es la N.º " + fam.mesa;
   } else {
     tarjetaMesa.style.display = "none";
   }
-  rsvpEstado.textContent = "";
 }
 
 function dispararConfeti() {
@@ -378,11 +384,11 @@ btnGuardarFamilia.addEventListener("click", async () => {
   const checkboxes = listaIntegrantesEl.querySelectorAll("input[type=checkbox]");
   const integrantesActualizados = (fam.integrantes || []).map((integrante, idx) => {
     const cbAsiste = listaIntegrantesEl.querySelector(`[data-idx="${idx}"][data-campo="asiste"]`);
-    const cbCeliaco = listaIntegrantesEl.querySelector(`[data-idx="${idx}"][data-campo="celiaco"]`);
+    const inpObs = listaIntegrantesEl.querySelector(`[data-idx="${idx}"][data-campo="observacion"]`);
     return {
       nombre: integrante.nombre,
       asiste: cbAsiste ? cbAsiste.checked : false,
-      celiaco: cbCeliaco ? cbCeliaco.checked : false
+      observacion: inpObs ? inpObs.value.trim() : ""
     };
   });
   const algunoAsiste = integrantesActualizados.some(i => i.asiste);
