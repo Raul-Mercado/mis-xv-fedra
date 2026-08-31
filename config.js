@@ -37,7 +37,7 @@ const CONFIG = {
   fotoFondo: "fondo-fedra.jpg",
 
   // --- Música de fondo (URL de un mp3) ---
-  musicaUrl: "ChristinaPerri-AThousandYears",
+  musicaUrl: "ChristinaPerri-AThousandYears.mp3",
 
   // --- Regalo en dinero (Mercado Pago) ---
   aliasMercadoPago: "fedra.ferrero.",
