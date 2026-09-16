@@ -10,7 +10,7 @@ const CONFIG = {
   fraseIntro: "Mis XV",
   fraseDedicatoria: "Se viene la fiesta del año y no podés faltar. ¡Te espero para bailar hasta que duelan los pies en mis XV!",
   fechaEvento: "2026-11-14T21:30:00", // formato AAAA-MM-DDTHH:MM:SS
-  fechaLimiteConfirmar: "30 de octubre",
+  fechaLimiteConfirmar: "25 de octubre",
 
   // --- Ubicación ---
   lugar: "Complejo Tierra Dorada",
