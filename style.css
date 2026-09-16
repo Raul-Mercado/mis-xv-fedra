@@ -480,6 +480,14 @@ p.desc { max-width: 40ch; margin: 0.8rem auto 0; line-height: 1.6; }
 .estado-badge.confirmado { background: rgba(60,110,70,0.15); color: #3c6e46; }
 .estado-badge.cancelado { background: rgba(150,60,60,0.15); color: #963c3c; }
 .mesa-asignada { margin-top: 0.9rem; font-family: var(--display); font-style: italic; font-size: 1.15rem; color: var(--dorado-osc); font-weight: 600; }
+.mesa-pendiente {
+  margin-top: 0.9rem;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--acento);
+  opacity: 0.9;
+}
 .acciones-invitado { display: flex; gap: 0.8rem; margin-top: 1.2rem; }
 .acciones-invitado button {
   flex: 1; font-family: var(--cuerpo); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase;

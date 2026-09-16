@@ -353,11 +353,19 @@ function mostrarTarjeta(id) {
   // La mesa se revela sola el día del evento, y solo si la familia ya confirmó.
   const inicioDelDia = new Date(fechaEvento.getFullYear(), fechaEvento.getMonth(), fechaEvento.getDate());
   const yaEsElDia = new Date() >= inicioDelDia;
+  const tarjetaMesaPendiente = document.getElementById("tarjeta-mesa-pendiente");
+
   if (yaRespondio && fam.estado === "confirmado" && fam.mesa && yaEsElDia) {
     tarjetaMesa.style.display = "block";
     tarjetaMesa.textContent = "Tu mesa es la N.º " + fam.mesa;
+    tarjetaMesaPendiente.style.display = "none";
+  } else if (yaRespondio && fam.estado === "confirmado" && !yaEsElDia) {
+    tarjetaMesa.style.display = "none";
+    tarjetaMesaPendiente.style.display = "block";
+    tarjetaMesaPendiente.textContent = "✦ Tu mesa se va a revelar acá mismo el día de la fiesta ✦";
   } else {
     tarjetaMesa.style.display = "none";
+    tarjetaMesaPendiente.style.display = "none";
   }
 }
 
