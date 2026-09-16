@@ -22,10 +22,15 @@ const CONFIG = {
 
   // --- Galería de fotos (URLs de imágenes) ---
   fotos: [
-    "https://images.unsplash.com/photo-1519741497674-611481863552?w=800",
-    "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800",
-    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800",
-    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800"
+    "foto1.JPG",
+    "foto2.jpg",
+    "foto3.jpg",
+    "foto4.jpg",
+    "foto5.jpg",
+    "foto6.jpg",
+    "foto7.jpg",
+    "foto8.jpg",
+    "foto9.jpg",
   ],
 
   // --- Link a la carpeta (Google Drive u otro) donde los invitados suben sus fotos/videos ---
