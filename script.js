@@ -350,10 +350,10 @@ function mostrarTarjeta(id) {
 
   rsvpEstado.textContent = "";
 
-  // La mesa se revela sola desde una semana antes del evento, y solo si la familia ya confirmó.
-  const unaSemanaAntes = new Date(fechaEvento.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const yaLlegoLaSemana = new Date() >= unaSemanaAntes;
-  if (yaRespondio && fam.estado === "confirmado" && fam.mesa && yaLlegoLaSemana) {
+  // La mesa se revela sola el día del evento, y solo si la familia ya confirmó.
+  const inicioDelDia = new Date(fechaEvento.getFullYear(), fechaEvento.getMonth(), fechaEvento.getDate());
+  const yaEsElDia = new Date() >= inicioDelDia;
+  if (yaRespondio && fam.estado === "confirmado" && fam.mesa && yaEsElDia) {
     tarjetaMesa.style.display = "block";
     tarjetaMesa.textContent = "Tu mesa es la N.º " + fam.mesa;
   } else {
