@@ -15,6 +15,9 @@ const CONFIG = {
   // --- Ubicación ---
   lugar: "Complejo Tierra Dorada",
   direccion: "Calle Ramón Franco, Medano de Oro",
+  // Coordenadas exactas (lat, lng) del lugar — se usan para el botón "Cómo llegar",
+  // así el resultado es siempre el mismo lugar exacto sin importar desde dónde se abra.
+  coordenadas: { lat: -31.6042778, lng: -68.4754164 },
   mapaEmbedSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3398.079627923598!2d-68.4754164!3d-31.6042778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x968115b08b366e01%3A0x79335430f5dae727!2sComplejo%20Tierra%20Dorada!5e0!3m2!1ses!2sar!4v1784393489534!5m2!1ses!2sar",
 
   // --- Dress code ---

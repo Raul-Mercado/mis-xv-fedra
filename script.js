@@ -173,8 +173,13 @@ document.getElementById("btn-ics").addEventListener("click", () => {
 document.getElementById("lugar-nombre").textContent = CONFIG.lugar;
 document.getElementById("direccion-texto").textContent = CONFIG.direccion;
 document.getElementById("mapa-iframe").src = CONFIG.mapaEmbedSrc;
+// El botón usa coordenadas exactas (no el texto de la dirección), así el destino
+// es siempre el mismo lugar sin importar desde dónde lo abra cada invitado.
+const destinoMapa = CONFIG.coordenadas
+  ? CONFIG.coordenadas.lat + "," + CONFIG.coordenadas.lng
+  : CONFIG.direccion;
 document.getElementById("btn-como-llegar").href =
-  "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(CONFIG.direccion);
+  "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(destinoMapa);
 
 // --- Dress code ---
 document.getElementById("dresscode-texto").textContent = CONFIG.dressCode;
