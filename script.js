@@ -362,6 +362,7 @@ inputBuscar.addEventListener("input", () => {
   });
 });
 
+let textoIntroOriginal = null;
 function mostrarTarjeta(id) {
   const fam = listaFamilias.find(f => f.id === id);
   if (!fam) return;
@@ -371,6 +372,15 @@ function mostrarTarjeta(id) {
   document.getElementById("tarjeta-numero").textContent = fam.numero ? "N° de invitación: " + fam.numero : "";
 
   const yaRespondio = fam.estado === "confirmado" || fam.estado === "cancelado";
+
+  const esDespuesCena = fam.tipo === "despues";
+  const textoIntro = document.querySelector("#tarjeta-invitado > p.desc");
+  if (textoIntro) {
+    if (textoIntroOriginal === null) textoIntroOriginal = textoIntro.textContent;
+    textoIntro.textContent = esDespuesCena
+      ? "Marcá quiénes de tu familia van a poder venir:"
+      : textoIntroOriginal;
+  }
 
   const integrantes = fam.integrantes || [];
   listaIntegrantesEl.innerHTML = "";
@@ -386,8 +396,8 @@ function mostrarTarjeta(id) {
     fila.innerHTML = `
       <input type="checkbox" id="${idAsiste}" data-idx="${idx}" data-campo="asiste" ${marcado ? "checked" : ""}>
       <label for="${idAsiste}" class="nombre-integrante">${integrante.nombre}</label>
-      <input type="text" class="obs-alimentaria" id="${idObs}" data-idx="${idx}" data-campo="observacion"
-             placeholder="¿Alguna dieta o alergia? (opcional)" value="${observacionPrevia.replace(/"/g, "&quot;")}">
+      ${esDespuesCena ? "" : `<input type="text" class="obs-alimentaria" id="${idObs}" data-idx="${idx}" data-campo="observacion"
+             placeholder="¿Alguna dieta o alergia? (opcional)" value="${observacionPrevia.replace(/"/g, "&quot;")}">`}
     `;
     listaIntegrantesEl.appendChild(fila);
   });
@@ -459,7 +469,7 @@ btnGuardarFamilia.addEventListener("click", async () => {
     return {
       nombre: integrante.nombre,
       asiste: cbAsiste ? cbAsiste.checked : false,
-      observacion: inpObs ? inpObs.value.trim() : ""
+      observacion: inpObs ? inpObs.value.trim() : (integrante.observacion || "")
     };
   });
   const algunoAsiste = integrantesActualizados.some(i => i.asiste);
