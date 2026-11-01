@@ -281,6 +281,18 @@ let yaAbrioPorLink = false;
 
 const numeroEnLink = new URLSearchParams(window.location.search).get("n");
 
+// Horario de llegada de los invitados de después de cena. Lo edita el organizador desde
+// la herramienta de lista de invitados y queda guardado en Firestore (ajustes/evento).
+let horaDespuesCena = "";
+if (db) {
+  db.collection("ajustes").doc("evento").onSnapshot(doc => {
+    horaDespuesCena = doc.exists ? (doc.data().horaDespuesCena || "") : "";
+    if (familiaSeleccionadaId) mostrarTarjeta(familiaSeleccionadaId);
+  }, () => {
+    // Sin permiso o sin conexión: se muestra el mensaje sin horario, sin romper nada.
+  });
+}
+
 if (db) {
   db.collection("invitados").onSnapshot(snapshot => {
     listaFamilias = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -359,6 +371,23 @@ function mostrarTarjeta(id) {
   const inicioDelDia = new Date(fechaEvento.getFullYear(), fechaEvento.getMonth(), fechaEvento.getDate());
   const yaEsElDia = new Date() >= inicioDelDia;
   const tarjetaMesaPendiente = document.getElementById("tarjeta-mesa-pendiente");
+  const tarjetaDespues = document.getElementById("tarjeta-despues");
+
+  if (fam.tipo === "despues") {
+    // Invitados solo para después de la cena: no tienen mesa, se les avisa el horario.
+    tarjetaMesa.style.display = "none";
+    tarjetaMesaPendiente.style.display = "none";
+    if (horaDespuesCena) {
+      tarjetaDespues.style.display = "block";
+      tarjetaDespues.style.cssText += ";font-style:normal;opacity:1;text-align:center;";
+      tarjetaDespues.innerHTML = '<span style="display:block;font-family:var(--display);font-size:2.6rem;line-height:1.1;font-weight:600;color:var(--dorado-osc);letter-spacing:0.04em;">' +
+        horaDespuesCena + ' hs</span>';
+    } else {
+      tarjetaDespues.style.display = "none";
+    }
+    return;
+  }
+  tarjetaDespues.style.display = "none";
 
   if (yaRespondio && fam.estado === "confirmado" && fam.mesa && yaEsElDia) {
     tarjetaMesa.style.display = "block";
