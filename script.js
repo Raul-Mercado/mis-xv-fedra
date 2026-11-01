@@ -104,10 +104,14 @@ if (CONFIG.fotoFondo) {
   document.querySelector(".portada").style.setProperty("--foto", `url('${CONFIG.fotoFondo}')`);
 }
 
-const fechaEvento = new Date(CONFIG.fechaEvento);
-document.getElementById("fecha-larga").textContent = fechaEvento.toLocaleDateString("es-AR", {
-  weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit"
-});
+const fechaEventoBase = new Date(CONFIG.fechaEvento);
+let fechaEvento = fechaEventoBase;
+function pintarFechaLarga(conHora) {
+  const opc = { weekday: "long", day: "numeric", month: "long", year: "numeric" };
+  if (conHora) { opc.hour = "2-digit"; opc.minute = "2-digit"; }
+  document.getElementById("fecha-larga").textContent = fechaEventoBase.toLocaleDateString("es-AR", opc);
+}
+pintarFechaLarga(true);
 
 // --- Cuenta regresiva ---
 let yaEsHoy = false;
@@ -134,18 +138,41 @@ setInterval(actualizarCuenta, 1000);
 function formatoFechaUTC(fecha) {
   return fecha.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 }
-const finEvento = new Date(fechaEvento.getTime() + 4 * 60 * 60 * 1000); // 4 horas de duración
+let finEvento = new Date(fechaEvento.getTime() + 4 * 60 * 60 * 1000); // 4 horas de duración
 const tituloEvento = "Mis XV " + CONFIG.nombreQuinceañera;
 const detalleEvento = CONFIG.fraseDedicatoria + " — " + CONFIG.lugar;
 
-const linkGoogleCal =
-  "https://www.google.com/calendar/render?action=TEMPLATE" +
-  "&text=" + encodeURIComponent(tituloEvento) +
-  "&dates=" + formatoFechaUTC(fechaEvento) + "/" + formatoFechaUTC(finEvento) +
-  "&details=" + encodeURIComponent(detalleEvento) +
-  "&location=" + encodeURIComponent(CONFIG.direccion) +
-  "&ctz=America/Argentina/Buenos_Aires";
-document.getElementById("btn-google-calendar").href = linkGoogleCal;
+function actualizarLinkCalendario() {
+  document.getElementById("btn-google-calendar").href =
+    "https://www.google.com/calendar/render?action=TEMPLATE" +
+    "&text=" + encodeURIComponent(tituloEvento) +
+    "&dates=" + formatoFechaUTC(fechaEvento) + "/" + formatoFechaUTC(finEvento) +
+    "&details=" + encodeURIComponent(detalleEvento) +
+    "&location=" + encodeURIComponent(CONFIG.direccion) +
+    "&ctz=America/Argentina/Buenos_Aires";
+}
+actualizarLinkCalendario();
+
+// Para las familias de después de cena: la portada, la cuenta y el calendario usan su horario.
+// Si la hora es de madrugada (antes de las 06:00) cuenta como el día siguiente.
+function aplicarHorarioPortada(esDespues) {
+  if (esDespues && horaDespuesCena && /^\d{1,2}:\d{2}$/.test(horaDespuesCena)) {
+    const [hh, mm] = horaDespuesCena.split(":").map(Number);
+    const f = new Date(fechaEventoBase.getFullYear(), fechaEventoBase.getMonth(), fechaEventoBase.getDate(), hh, mm);
+    if (hh < 6) f.setDate(f.getDate() + 1);
+    fechaEvento = f;
+    finEvento = new Date(f.getTime() + 3 * 60 * 60 * 1000);
+    pintarFechaLarga(false);
+  } else if (esDespues) {
+    pintarFechaLarga(false);
+  } else {
+    fechaEvento = fechaEventoBase;
+    finEvento = new Date(fechaEvento.getTime() + 4 * 60 * 60 * 1000);
+    pintarFechaLarga(true);
+  }
+  actualizarLinkCalendario();
+  if (!yaEsHoy) actualizarCuenta();
+}
 
 document.getElementById("btn-ics").addEventListener("click", () => {
   const ics = [
@@ -372,6 +399,7 @@ function mostrarTarjeta(id) {
   const yaEsElDia = new Date() >= inicioDelDia;
   const tarjetaMesaPendiente = document.getElementById("tarjeta-mesa-pendiente");
   const tarjetaDespues = document.getElementById("tarjeta-despues");
+  aplicarHorarioPortada(fam.tipo === "despues");
 
   if (fam.tipo === "despues") {
     // Invitados solo para después de la cena: no tienen mesa, se les avisa el horario.
@@ -380,7 +408,8 @@ function mostrarTarjeta(id) {
     if (horaDespuesCena) {
       tarjetaDespues.style.display = "block";
       tarjetaDespues.style.cssText += ";font-style:normal;opacity:1;text-align:center;";
-      tarjetaDespues.innerHTML = '<span style="display:block;font-family:var(--display);font-size:2.6rem;line-height:1.1;font-weight:600;color:var(--dorado-osc);letter-spacing:0.04em;">' +
+      tarjetaDespues.innerHTML = '<span style="display:block;font-family:var(--display);font-style:italic;font-size:1.3rem;color:var(--dorado-osc);">Te espero a las</span>' +
+        '<span style="display:block;font-family:var(--display);font-size:2.6rem;line-height:1.1;font-weight:600;color:var(--dorado-osc);letter-spacing:0.04em;">' +
         horaDespuesCena + ' hs</span>';
     } else {
       tarjetaDespues.style.display = "none";
